@@ -20,7 +20,7 @@
   "nyc": {
     "function": 80,
     "lines": 80,
-    "check-coverage": true,
+    "check-coverage": true, 
     "reporter": [
       "text",
       "html"
