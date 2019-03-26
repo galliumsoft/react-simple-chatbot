@@ -683,6 +683,7 @@ class ChatBot extends Component {
             style={contentStyle}
             height={height}
             hideInput={currentStep.hideInput}
+            hideUserInput={hideUserInput}
           >
             {renderedSteps.map(this.renderStep)}
           </Content>
