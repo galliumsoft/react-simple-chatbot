@@ -682,6 +682,7 @@ class ChatBot extends Component {
             floating={floating}
             style={contentStyle}
             height={height}
+            hideHeader={hideHeader}
             hideInput={currentStep.hideInput}
             hideUserInput={hideUserInput}
           >
