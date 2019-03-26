@@ -24,7 +24,7 @@ class CustomStep extends Component {
         }
         speak(step, previousValue);
       });
-    }, delay / 50);
+    }, delay);
   }
 
   renderComponent = () => {
