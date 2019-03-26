@@ -618,6 +618,7 @@ class ChatBot extends Component {
       headerComponent,
       headerTitle,
       hideHeader,
+      hideUserInput,
       hideSubmitButton,
       inputStyle,
       placeholder,
@@ -687,7 +688,7 @@ class ChatBot extends Component {
           </Content>
           <Footer className="rsc-footer" style={footerStyle}>
             {
-              !currentStep.hideInput && (
+              !currentStep.hideInput && !hideUserInput && (
                 <Input
                   type="textarea"
                   style={inputStyle}
@@ -749,6 +750,7 @@ ChatBot.propTypes = {
   height: PropTypes.string,
   hideBotAvatar: PropTypes.bool,
   hideHeader: PropTypes.bool,
+  hideUserInput: PropTypes.bool,
   hideSubmitButton: PropTypes.bool,
   hideUserAvatar: PropTypes.bool,
   inputAttributes: PropTypes.objectOf(PropTypes.any),
@@ -791,9 +793,10 @@ ChatBot.defaultProps = {
   handleEnd: undefined,
   headerComponent: undefined,
   headerTitle: 'Meet Javis',
-  height: '520px',
+  height: '450px',
   hideBotAvatar: false,
   hideHeader: false,
+  hideUserInput: false,
   hideSubmitButton: false,
   hideUserAvatar: false,
   inputStyle: {},
