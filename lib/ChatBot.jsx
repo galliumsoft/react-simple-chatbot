@@ -795,7 +795,7 @@ ChatBot.defaultProps = {
   handleEnd: undefined,
   headerComponent: undefined,
   headerTitle: 'Meet Javis',
-  height: '450px',
+  height: '550px',
   hideBotAvatar: false,
   hideHeader: false,
   hideUserInput: false,
