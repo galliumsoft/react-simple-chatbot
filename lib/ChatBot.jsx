@@ -138,7 +138,26 @@ class ChatBot extends Component {
     });
   }
 
-  componentWillReceiveProps(nextProps){
+  componentDidMount() {
+    const { recognitionEnable } = this.state;
+    const { recognitionLang } = this.props;
+
+    if (recognitionEnable) {
+      this.recognition = new Recognition(
+        this.onRecognitionChange,
+        this.onRecognitionEnd,
+        this.onRecognitionStop,
+        recognitionLang,
+      );
+    }
+
+    if (this.content) {
+      this.content.addEventListener('DOMNodeInserted', this.onNodeInserted);
+      window.addEventListener('resize', this.onResize);
+    }
+  }
+
+  componentWillReceiveProps(nextProps) {
     const { steps } = nextProps;
     const {
       botDelay,
@@ -214,26 +233,7 @@ class ChatBot extends Component {
       steps: chatSteps,
     });
   }
-
-  componentDidMount() {
-    const { recognitionEnable } = this.state;
-    const { recognitionLang } = this.props;
-
-    if (recognitionEnable) {
-      this.recognition = new Recognition(
-        this.onRecognitionChange,
-        this.onRecognitionEnd,
-        this.onRecognitionStop,
-        recognitionLang,
-      );
-    }
-
-    if (this.content) {
-      this.content.addEventListener('DOMNodeInserted', this.onNodeInserted);
-      window.addEventListener('resize', this.onResize);
-    }
-  }
-
+  
   componentWillUpdate(nextProps, nextState) {
     const { opened } = nextProps;
 
