@@ -158,7 +158,8 @@ class ChatBot extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if(nextProps.steps != this.props.steps){
+    
+    if(nextProps.steps !== this.props.steps) {  
       const { steps } = nextProps;
 
       const {
@@ -172,11 +173,9 @@ class ChatBot extends Component {
         userDelay,
       } = nextProps;
       const chatSteps = {};
-  
       const defaultBotSettings = { delay: botDelay, avatar: botAvatar };
       const defaultUserSettings = { delay: userDelay, avatar: userAvatar, hideInput: false };
       const defaultCustomSettings = { delay: customDelay };
-  
       for (let i = 0, len = steps.length; i < len; i += 1) {
         const step = steps[i];
         let settings = {};
@@ -188,20 +187,18 @@ class ChatBot extends Component {
         } else if (step.component) {
           settings = defaultCustomSettings;
         }
-  
         chatSteps[step.id] = Object.assign({}, settings, schema.parse(step));
       }
-  
-      schema.checkInvalidIds(chatSteps);
-  
+
+      schema.checkInvalidIds(chatSteps);  
       const firstStep = steps[0];
-  
+
       if (firstStep.message) {
         const { message } = firstStep;
         firstStep.message = typeof message === 'function' ? message() : message;
         chatSteps[firstStep.id].message = firstStep.message;
       }
-  
+
       const {
         currentStep,
         previousStep,
