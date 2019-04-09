@@ -233,7 +233,7 @@ class ChatBot extends Component {
       steps: chatSteps,
     });
   }
-  
+
   componentWillUpdate(nextProps, nextState) {
     const { opened } = nextProps;
 
