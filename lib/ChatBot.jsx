@@ -159,6 +159,9 @@ class ChatBot extends Component {
 
   componentWillReceiveProps(nextProps) {
     const { steps } = nextProps;
+
+    console.log("steps : ", steps)
+
     const {
       botDelay,
       botAvatar,
@@ -168,7 +171,7 @@ class ChatBot extends Component {
       enableMobileAutoFocus,
       userAvatar,
       userDelay,
-    } = this.props;
+    } = nextProps;
     const chatSteps = {};
 
     const defaultBotSettings = { delay: botDelay, avatar: botAvatar };
