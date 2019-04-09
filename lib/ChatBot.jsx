@@ -160,7 +160,7 @@ class ChatBot extends Component {
   componentWillReceiveProps(nextProps) {
     const { steps } = nextProps;
 
-    console.log("steps : ", steps)
+    console.log('steps : ', steps);
 
     const {
       botDelay,
