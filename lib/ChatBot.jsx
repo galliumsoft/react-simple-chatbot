@@ -158,83 +158,83 @@ class ChatBot extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { steps } = nextProps;
+    if(nextProps.steps != this.props.steps){
+      const { steps } = nextProps;
 
-    console.log('steps : ', steps);
-
-    const {
-      botDelay,
-      botAvatar,
-      cache,
-      cacheName,
-      customDelay,
-      enableMobileAutoFocus,
-      userAvatar,
-      userDelay,
-    } = nextProps;
-    const chatSteps = {};
-
-    const defaultBotSettings = { delay: botDelay, avatar: botAvatar };
-    const defaultUserSettings = { delay: userDelay, avatar: userAvatar, hideInput: false };
-    const defaultCustomSettings = { delay: customDelay };
-
-    for (let i = 0, len = steps.length; i < len; i += 1) {
-      const step = steps[i];
-      let settings = {};
-
-      if (step.user) {
-        settings = defaultUserSettings;
-      } else if (step.message || step.asMessage) {
-        settings = defaultBotSettings;
-      } else if (step.component) {
-        settings = defaultCustomSettings;
-      }
-
-      chatSteps[step.id] = Object.assign({}, settings, schema.parse(step));
-    }
-
-    schema.checkInvalidIds(chatSteps);
-
-    const firstStep = steps[0];
-
-    if (firstStep.message) {
-      const { message } = firstStep;
-      firstStep.message = typeof message === 'function' ? message() : message;
-      chatSteps[firstStep.id].message = firstStep.message;
-    }
-
-    const {
-      currentStep,
-      previousStep,
-      previousSteps,
-      renderedSteps,
-    } = storage.getData(
-      {
-        cacheName,
+      const {
+        botDelay,
+        botAvatar,
         cache,
-        firstStep,
-        steps: chatSteps,
-      },
-      () => {
-        // focus input if last step cached is a user step
-        this.setState({ disabled: false }, () => {
-          if (enableMobileAutoFocus || !isMobile()) {
-            if (this.input) {
-              this.input.focus();
+        cacheName,
+        customDelay,
+        enableMobileAutoFocus,
+        userAvatar,
+        userDelay,
+      } = nextProps;
+      const chatSteps = {};
+  
+      const defaultBotSettings = { delay: botDelay, avatar: botAvatar };
+      const defaultUserSettings = { delay: userDelay, avatar: userAvatar, hideInput: false };
+      const defaultCustomSettings = { delay: customDelay };
+  
+      for (let i = 0, len = steps.length; i < len; i += 1) {
+        const step = steps[i];
+        let settings = {};
+  
+        if (step.user) {
+          settings = defaultUserSettings;
+        } else if (step.message || step.asMessage) {
+          settings = defaultBotSettings;
+        } else if (step.component) {
+          settings = defaultCustomSettings;
+        }
+  
+        chatSteps[step.id] = Object.assign({}, settings, schema.parse(step));
+      }
+  
+      schema.checkInvalidIds(chatSteps);
+  
+      const firstStep = steps[0];
+  
+      if (firstStep.message) {
+        const { message } = firstStep;
+        firstStep.message = typeof message === 'function' ? message() : message;
+        chatSteps[firstStep.id].message = firstStep.message;
+      }
+  
+      const {
+        currentStep,
+        previousStep,
+        previousSteps,
+        renderedSteps,
+      } = storage.getData(
+        {
+          cacheName,
+          cache,
+          firstStep,
+          steps: chatSteps,
+        },
+        () => {
+          // focus input if last step cached is a user step
+          this.setState({ disabled: false }, () => {
+            if (enableMobileAutoFocus || !isMobile()) {
+              if (this.input) {
+                this.input.focus();
+              }
             }
-          }
-        });
-      },
-    );
-
-    this.setState({
-      currentStep,
-      defaultUserSettings,
-      previousStep,
-      previousSteps,
-      renderedSteps,
-      steps: chatSteps,
-    });
+          });
+        },
+      );
+  
+      this.setState({
+        currentStep,
+        defaultUserSettings,
+        previousStep,
+        previousSteps,
+        renderedSteps,
+        steps: chatSteps,
+      });
+    }
   }
 
   componentWillUpdate(nextProps, nextState) {
