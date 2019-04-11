@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Random from 'random-id';
 import {
-  CustomStep, OptionsStep, TextStep, PromiseStep,
+  CustomStep, OptionsStep, TextStep,
 } from './steps_components';
 import schema from './schemas/schema';
 import * as storage from './storage';
@@ -75,14 +75,12 @@ class ChatBot extends Component {
       enableMobileAutoFocus,
       userAvatar,
       userDelay,
-      promiseDelay,
     } = this.props;
     const chatSteps = {};
 
     const defaultBotSettings = { delay: botDelay, avatar: botAvatar };
     const defaultUserSettings = { delay: userDelay, avatar: userAvatar, hideInput: false };
     const defaultCustomSettings = { delay: customDelay };
-    const defaultPromiseSettings = { delay: promiseDelay };
 
     for (let i = 0, len = steps.length; i < len; i += 1) {
       const step = steps[i];
@@ -94,8 +92,6 @@ class ChatBot extends Component {
         settings = defaultBotSettings;
       } else if (step.component) {
         settings = defaultCustomSettings;
-      } else if (step.promise) {
-        settings = defaultPromiseSettings;
       }
 
       chatSteps[step.id] = Object.assign({}, settings, schema.parse(step));
@@ -176,14 +172,12 @@ class ChatBot extends Component {
         enableMobileAutoFocus,
         userAvatar,
         userDelay,
-        promiseDelay,
       } = nextProps;
       const chatSteps = {};
 
       const defaultBotSettings = { delay: botDelay, avatar: botAvatar };
       const defaultUserSettings = { delay: userDelay, avatar: userAvatar, hideInput: false };
       const defaultCustomSettings = { delay: customDelay };
-      const defaultPromiseSettings = { delay: promiseDelay };
 
       for (let i = 0, len = nextProps.steps.length; i < len; i += 1) {
         const step = nextProps.steps[i];
@@ -195,8 +189,6 @@ class ChatBot extends Component {
           settings = defaultBotSettings;
         } else if (step.component) {
           settings = defaultCustomSettings;
-        } else if (step.promise) {
-          settings = defaultPromiseSettings;
         }
 
         chatSteps[step.id] = Object.assign({}, settings, schema.parse(step));
@@ -636,14 +628,13 @@ class ChatBot extends Component {
       avatarStyle,
       bubbleStyle,
       bubbleOptionStyle,
-      promiseStyle,
       customStyle,
       hideBotAvatar,
       hideUserAvatar,
       speechSynthesis,
     } = this.props;
     const {
-      options, component, asMessage, promise,
+      options, component, asMessage,
     } = step;
     const steps = this.generateRenderedStepsById();
     const previousStep = index > 0 ? renderedSteps[index - 1] : {};
@@ -677,19 +668,7 @@ class ChatBot extends Component {
         />
       );
     }
-    if (promise) {
-      return (
-        <PromiseStep
-          key={index}
-          step={step}
-          speak={this.speak}
-          style={promiseStyle}
-          previousStep={previousStep}
-          previousValue={previousStep.value}
-          triggerNextStep={this.triggerNextStep}
-        />
-      );
-    }
+
     return (
       <TextStep
         key={index}
@@ -849,7 +828,6 @@ ChatBot.propTypes = {
   botAvatar: PropTypes.string,
   botDelay: PropTypes.number,
   bubbleOptionStyle: PropTypes.objectOf(PropTypes.any),
-  promiseStyle: PropTypes.objectOf(PropTypes.any),
   bubbleStyle: PropTypes.objectOf(PropTypes.any),
 
   cache: PropTypes.bool,
@@ -897,7 +875,6 @@ ChatBot.defaultProps = {
   avatarStyle: {},
   botDelay: 1000,
   bubbleOptionStyle: {},
-  promiseStyle: {},
   bubbleStyle: {},
   cache: false,
   cacheName: 'rsc_cache',
