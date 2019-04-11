@@ -10,6 +10,7 @@ class TextStep extends Component {
   /* istanbul ignore next */
   state = {
     loading: true,
+    promiseText : false
   };
 
   componentDidMount() {
@@ -21,14 +22,30 @@ class TextStep extends Component {
     } = this.props;
     const { component, delay, waitAction } = step;
     const isComponentWatingUser = component && waitAction;
-    setTimeout(() => {
-      this.setState({ loading: false }, () => {
-        if (!isComponentWatingUser && !step.rendered) {
-          triggerNextStep();
-        }
-        speak(step, previousValue);
-      });
-    }, delay);
+
+    if(step.metadata && step.metadata.promise){
+      console.log("previousValue : ", previousValue)
+      this.setState({ promiseText : true})
+      setTimeout(() => {
+        this.setState({promiseText : false})
+        this.setState({ loading: false }, () => {
+          if (!isComponentWatingUser && !step.rendered) {
+            triggerNextStep();
+          }
+          speak(step, previousValue);
+        });
+      }, 5000);
+    }
+    else{
+      setTimeout(() => {
+        this.setState({ loading: false }, () => {
+          if (!isComponentWatingUser && !step.rendered) {
+            triggerNextStep();
+          }
+          speak(step, previousValue);
+        });
+      }, delay);  
+    }
   }
 
   componentWillReceiveProps(nextProps) {
@@ -91,7 +108,7 @@ class TextStep extends Component {
       hideBotAvatar,
       hideUserAvatar,
     } = this.props;
-    const { loading } = this.state;
+    const { loading, promiseText } = this.state;
     const { avatar, user } = step;
 
     const showAvatar = user ? !hideUserAvatar : !hideBotAvatar;
@@ -120,7 +137,7 @@ class TextStep extends Component {
           isFirst={isFirst}
           isLast={isLast}
         >
-          {loading ? <Loading /> : this.renderMessage()}
+          {loading || promiseText ? <Loading /> : this.renderMessage()}
         </Bubble>
       </TextStepContainer>
     );

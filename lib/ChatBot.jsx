@@ -620,9 +620,9 @@ class ChatBot extends Component {
   renderStep = (step, index) => {
     const { 
       renderedSteps,
-      changedConversation
+      changedConversation,
     } = this.state;
-    
+
     const {
       avatarStyle,
       bubbleStyle,
@@ -632,6 +632,7 @@ class ChatBot extends Component {
       hideUserAvatar,
       speechSynthesis
     } = this.props;
+
     const { options, component, asMessage } = step;
     const steps = this.generateRenderedStepsById();
     const previousStep = index > 0 ? renderedSteps[index - 1] : {};
@@ -647,6 +648,7 @@ class ChatBot extends Component {
           previousStep={previousStep}
           previousValue={previousStep.value}
           triggerNextStep={this.triggerNextStep}
+          changedConversation={changedConversation} // TODO : to be handled
         />
       );
     }
@@ -660,6 +662,7 @@ class ChatBot extends Component {
           previousValue={previousStep.value}
           triggerNextStep={this.triggerNextStep}
           bubbleOptionStyle={bubbleOptionStyle}
+          changedConversation={changedConversation} // TODO : to be handled
         />
       );
     }
@@ -671,7 +674,7 @@ class ChatBot extends Component {
         steps={steps}
         speak={this.speak}
         previousStep={previousStep}
-        previousValue={previousStep.value}
+        previousValue={previousStep.message}
         triggerNextStep={this.triggerNextStep}
         avatarStyle={avatarStyle}
         bubbleStyle={bubbleStyle}
