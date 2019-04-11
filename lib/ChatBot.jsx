@@ -56,6 +56,7 @@ class ChatBot extends Component {
       speaking: false,
       recognitionEnable: props.recognitionEnable && Recognition.isSupported(),
       defaultUserSettings: {},
+      changedConversation : false
     };
 
     this.speak = speakFn(props.speechSynthesis);
@@ -157,6 +158,87 @@ class ChatBot extends Component {
     }
   }
 
+  componentWillReceiveProps(nextProps) {
+
+    if(nextProps.steps.length != this.props.steps.length){
+      const { steps } = nextProps;
+      const {
+        botDelay,
+        botAvatar,
+        cache,
+        cacheName,
+        customDelay,
+        enableMobileAutoFocus,
+        userAvatar,
+        userDelay,
+      } = nextProps;
+      const chatSteps = {};
+  
+      const defaultBotSettings = { delay: botDelay, avatar: botAvatar };
+      const defaultUserSettings = { delay: userDelay, avatar: userAvatar, hideInput: false };
+      const defaultCustomSettings = { delay: customDelay };
+  
+      for (let i = 0, len = steps.length; i < len; i += 1) {
+        const step = steps[i];
+        let settings = {};
+  
+        if (step.user) {
+          settings = defaultUserSettings;
+        } else if (step.message || step.asMessage) {
+          settings = defaultBotSettings;
+        } else if (step.component) {
+          settings = defaultCustomSettings;
+        }
+  
+        chatSteps[step.id] = Object.assign({}, settings, schema.parse(step));
+      }
+  
+      schema.checkInvalidIds(chatSteps);
+  
+      const firstStep = steps[0];
+  
+      if (firstStep.message) {
+        const { message } = firstStep;
+        firstStep.message = typeof message === 'function' ? message() : message;
+        chatSteps[firstStep.id].message = firstStep.message;
+      }
+  
+      const {
+        currentStep,
+        previousStep,
+        previousSteps,
+        renderedSteps,
+      } = storage.getData(
+        {
+          cacheName,
+          cache,
+          firstStep,
+          steps: chatSteps,
+        },
+        () => {
+          // focus input if last step cached is a user step
+          this.setState({ disabled: false }, () => {
+            if (enableMobileAutoFocus || !isMobile()) {
+              if (this.input) {
+                this.input.focus();
+              }
+            }
+          });
+        },
+      );
+  
+      this.setState({
+        currentStep,
+        defaultUserSettings,
+        previousStep,
+        previousSteps,
+        renderedSteps,
+        steps: chatSteps,
+        changedConversation : true
+      });
+    }
+  }
+
   componentWillUpdate(nextProps, nextState) {
     const { opened } = nextProps;
 
@@ -243,6 +325,7 @@ class ChatBot extends Component {
     } = this.state;
 
     let { currentStep, previousStep } = this.state;
+    
     const isEnd = currentStep.end;
 
     if (data && data.value) {
@@ -535,7 +618,11 @@ class ChatBot extends Component {
   }
 
   renderStep = (step, index) => {
-    const { renderedSteps } = this.state;
+    const { 
+      renderedSteps,
+      changedConversation
+    } = this.state;
+    
     const {
       avatarStyle,
       bubbleStyle,
@@ -543,7 +630,7 @@ class ChatBot extends Component {
       customStyle,
       hideBotAvatar,
       hideUserAvatar,
-      speechSynthesis,
+      speechSynthesis
     } = this.props;
     const { options, component, asMessage } = step;
     const steps = this.generateRenderedStepsById();
@@ -593,6 +680,7 @@ class ChatBot extends Component {
         speechSynthesis={speechSynthesis}
         isFirst={this.isFirstPosition(step)}
         isLast={this.isLastPosition(step)}
+        changedConversation={changedConversation}
       />
     );
   }
@@ -607,6 +695,7 @@ class ChatBot extends Component {
       renderedSteps,
       speaking,
       recognitionEnable,
+      changedConversation
     } = this.state;
     const {
       className,

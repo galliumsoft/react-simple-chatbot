@@ -21,7 +21,6 @@ class TextStep extends Component {
     } = this.props;
     const { component, delay, waitAction } = step;
     const isComponentWatingUser = component && waitAction;
-
     setTimeout(() => {
       this.setState({ loading: false }, () => {
         if (!isComponentWatingUser && !step.rendered) {
@@ -30,6 +29,28 @@ class TextStep extends Component {
         speak(step, previousValue);
       });
     }, delay);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if(nextProps.changedConversation){
+      const {
+        step,
+        speak,
+        previousValue,
+        triggerNextStep,
+      } = nextProps;
+      const { component, delay, waitAction } = step;
+      const isComponentWatingUser = component && waitAction;
+      
+      setTimeout(() => {
+        this.setState({ loading: false }, () => {
+          if (!isComponentWatingUser && !step.rendered) {
+            triggerNextStep();
+          }
+          speak(step, previousValue);
+        });
+      }, delay);
+    }
   }
 
   getMessage = () => {
