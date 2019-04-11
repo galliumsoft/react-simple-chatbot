@@ -165,8 +165,8 @@ class ChatBot extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.steps.length != this.props.steps.length) {
-      const { steps } = nextProps;
+    const { steps } = this.props;
+    if (nextProps.steps.length !== steps.length) {
       const {
         botDelay,
         botAvatar,
@@ -185,8 +185,8 @@ class ChatBot extends Component {
       const defaultCustomSettings = { delay: customDelay };
       const defaultPromiseSettings = { delay: promiseDelay };
 
-      for (let i = 0, len = steps.length; i < len; i += 1) {
-        const step = steps[i];
+      for (let i = 0, len = nextProps.steps.length; i < len; i += 1) {
+        const step = nextProps.steps[i];
         let settings = {};
 
         if (step.user) {
@@ -204,7 +204,7 @@ class ChatBot extends Component {
 
       schema.checkInvalidIds(chatSteps);
 
-      const firstStep = steps[0];
+      const firstStep = nextProps.steps[0];
 
       if (firstStep.message) {
         const { message } = firstStep;
@@ -636,6 +636,7 @@ class ChatBot extends Component {
       avatarStyle,
       bubbleStyle,
       bubbleOptionStyle,
+      promiseStyle,
       customStyle,
       hideBotAvatar,
       hideUserAvatar,
@@ -684,7 +685,6 @@ class ChatBot extends Component {
           previousStep={previousStep}
           previousValue={previousStep.value}
           triggerNextStep={this.triggerNextStep}
-          bubbleOptionStyle={bubbleOptionStyle}
         />
       );
     }
@@ -719,7 +719,7 @@ class ChatBot extends Component {
       renderedSteps,
       speaking,
       recognitionEnable,
-      changedConversation,
+
     } = this.state;
     const {
       className,
@@ -847,7 +847,9 @@ ChatBot.propTypes = {
   botAvatar: PropTypes.string,
   botDelay: PropTypes.number,
   bubbleOptionStyle: PropTypes.objectOf(PropTypes.any),
+  promiseStyle: PropTypes.objectOf(PropTypes.any),
   bubbleStyle: PropTypes.objectOf(PropTypes.any),
+
   cache: PropTypes.bool,
   cacheName: PropTypes.string,
   className: PropTypes.string,
@@ -893,6 +895,7 @@ ChatBot.defaultProps = {
   avatarStyle: {},
   botDelay: 1000,
   bubbleOptionStyle: {},
+  promiseStyle: {},
   bubbleStyle: {},
   cache: false,
   cacheName: 'rsc_cache',
